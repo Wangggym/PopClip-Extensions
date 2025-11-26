@@ -4,13 +4,18 @@ identifier: com.wangyimin.popclip.extension.github-approve
 description: Approve a GitHub Pull Request using qkflow, with optional auto-merge.
 popclipVersion: 4586
 icon: 👍
-regex: https://github\.com/[^/]+/[^/]+/pull/\d+
+regex: (https://)?github\.com/[^/]+/[^/]+/pull/\d+
 interpreter: zsh
 shell script: |
   # 添加 Go bin 到 PATH
   export PATH="$HOME/go/bin:$PATH"
   
   URL="$POPCLIP_TEXT"
+  
+  # 如果 URL 没有协议前缀，自动补全 https://
+  if [[ ! "$URL" =~ ^https?:// ]]; then
+    URL="https://$URL"
+  fi
   
   # 构建命令
   CMD="qkflow pr approve \"$URL\""
